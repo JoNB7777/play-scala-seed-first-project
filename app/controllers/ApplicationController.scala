@@ -15,11 +15,26 @@ class ApplicationController @Inject()(val controllerComponents: ControllerCompon
     dataRepository.find().map(items => Ok(Json.toJson(items)))
   }
 
-  def create = TODO
+  def create(): Action[JsValue] = Action.async(parse.json) { implicit request =>
+    request.body.validate[DataModel] match {
+      case JsSuccess(dataModel, _) =>
+        dataRepository.create(dataModel).map(_ => Created)
+      case JsError(_) => Future(BadRequest)
+    }
+  }
 
-  def read(id: String): Action[AnyContent] = TODO
+  def read(id: String): Action[AnyContent] = Action.async { implicit request =>
+    dataRepository.read(id).map(_ => Ok)
 
-  def update(id: String): Action[AnyContent] = TODO
+  }
+
+  def update(id: String): Action[JsValue] = Action.async(parse.json) { implicit request =>
+    request.body.validate[DataModel] match {
+      case JsSuccess(dataModel, _) =>
+        dataRepository.update(dataModel).map(_ => Accepted(Json.toJson(dataModel)))
+      case JsError(_) => Future(BadRequest)
+    }
+  }
 
   def delete(id: String): Action[AnyContent] = Action.async { implicit request =>
     dataRepository.delete(id).map(_ => Status(ACCEPTED))
