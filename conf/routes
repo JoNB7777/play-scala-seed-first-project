@@ -13,7 +13,7 @@ GET     /api/index                 controllers.ApplicationController.index
 
 POST    /api/index                 controllers.ApplicationController.index
 
-POST    /api                 controllers.ApplicationController.create
+POST    /api/create                 controllers.ApplicationController.create
 
 GET     /api/read/:id               controllers.ApplicationController.read(id: String)
 
